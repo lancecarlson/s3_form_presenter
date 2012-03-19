@@ -4,11 +4,11 @@ require 'openssl'
 
 module S3FormPresenter
   class Form
-    HIDDEN_FIELD_NAMES = :key, :access_key, :secret_key, :acl, :redirect_url, :policy, :signature
+    HIDDEN_FIELD_NAMES = :key, :access_key, :acl, :redirect_url, :policy, :signature
     ACCESSOR_FIELDS = HIDDEN_FIELD_NAMES - [:policy, :signature]
     RENAMED_FIELDS = {:redirect_url => "success_action_redirect", :access_key => "AWSAccessKeyId"}
-    REQUIRED_ATTRIBUTES = [:bucket] + HIDDEN_FIELD_NAMES
-    attr_accessor :bucket, :inner_content, :extra_form_attributes, :starts_with
+    REQUIRED_ATTRIBUTES = [:bucket, :secret_key] + HIDDEN_FIELD_NAMES
+    attr_accessor :bucket, :secret_key, :inner_content, :extra_form_attributes, :starts_with
 
     def initialize(key, redirect_url, options={}, &block)
       @key = key

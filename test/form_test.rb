@@ -84,7 +84,6 @@ describe S3FormPresenter::Form do
       {
         "key" => "some/test/key.ext",
         "AWSAccessKeyId" => "test_access_key",
-        "secret_key" => "test_secret_key",
         "acl" => "private",
         "success_action_redirect" => "http://www.some-test-redirect.com/some/path",
         "policy" => 324,
