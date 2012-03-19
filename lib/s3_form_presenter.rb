@@ -9,13 +9,14 @@ module S3FormPresenter
     RENAMED_FIELDS = {:redirect_url => "success_action_redirect", :access_key => "AWSAccessKeyId"}
     attr_accessor :bucket, :inner_content, :extra_form_attributes
 
-    def initialize(key, options={}, &block)
+    def initialize(key, redirect_url, options={}, &block)
       @key = key
       @access_key = options[:access_key] || ENV["AWS_ACCESS_KEY_ID"]
       @secret_key = options[:secret_key] || ENV["AWS_SECRET_ACCESS_KEY"]
       @bucket = options[:bucket] || ENV["AWS_S3_BUCKET"]
-      @acl = options[:acl]
+      @acl = options[:acl] || :private
       @extra_form_attributes = options[:extra_form_attributes]
+      @redirect_url = redirect_url
       if block_given?
         @inner_content = block.call
       else

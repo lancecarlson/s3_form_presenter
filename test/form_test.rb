@@ -4,7 +4,7 @@ include S3FormPresenter
 
 describe S3FormPresenter::Form do
   before do
-    @form = Form.new("some/test/key.ext") do
+    @form = Form.new("some/test/key.ext", "http://www.someurl.com/comeback") do
       %Q(<input name="file" type="file"><input type="submit" value="Upload File" class="btn btn-primary">)
     end
     @form.bucket = "test_bucket"
@@ -15,24 +15,35 @@ describe S3FormPresenter::Form do
   end
 
   describe "initializer" do
+    describe "defaults" do
+      before do
+        @form = Form.new("some/test/key", "http://www.someurl.com/comeback")
+      end
+
+      it "should specify some defaults" do
+        @form.acl.must_equal :private
+      end
+    end
+
     it "allows an empty block and provides a sane default" do
-      @form = Form.new("some/test/key.ext").inner_content.must_equal %Q(<input name="file" type="file"><input type="submit" value="Upload File" class="btn btn-primary">)
+      @form = Form.new("some/test/key.ext", "http://www.someurl.com/comeback").inner_content.must_equal %Q(<input name="file" type="file"><input type="submit" value="Upload File" class="btn btn-primary">)
     end
 
     it "should let you override access_key, secret_key and bucket with ENV" do
       ENV["AWS_ACCESS_KEY_ID"] = "overridden_env_access_key"
       ENV["AWS_SECRET_ACCESS_KEY"] = "overridden_env_secret_key"
       ENV["AWS_S3_BUCKET"] = "overridden_env_bucket"
-      @form = Form.new("some/test/key.ext").access_key.must_equal "overridden_env_access_key"
-      @form = Form.new("some/test/key.ext").secret_key.must_equal "overridden_env_secret_key"
-      @form = Form.new("some/test/key.ext").bucket.must_equal "overridden_env_bucket"
+      @form = Form.new("some/test/key.ext", "http://www.someurl.com/comeback")
+      @form.access_key.must_equal "overridden_env_access_key"
+      @form.secret_key.must_equal "overridden_env_secret_key"
+      @form.bucket.must_equal "overridden_env_bucket"
     end
 
     it "should let you override access_key, secret_key and bucket and acl with options in the initializer" do
-      @form = Form.new("some/test/key.ext", :access_key => "overridden_options_access_key").access_key.must_equal "overridden_options_access_key"
-      @form = Form.new("some/test/key.ext", :secret_key => "overridden_options_secret_key").secret_key.must_equal "overridden_options_secret_key"
-      @form = Form.new("some/test/key.ext", :bucket => "overridden_options_bucket").bucket.must_equal "overridden_options_bucket"
-      @form = Form.new("some/test/key.ext", :acl => "overridden_options_acl").acl.must_equal "overridden_options_acl"
+      Form.new("some/test/key.ext", "http://www.someurl.com/comeback", :access_key => "overridden_options_access_key").access_key.must_equal "overridden_options_access_key"
+      Form.new("some/test/key.ext", "http://www.someurl.com/comeback", :secret_key => "overridden_options_secret_key").secret_key.must_equal "overridden_options_secret_key"
+      Form.new("some/test/key.ext", "http://www.someurl.com/comeback", :bucket => "overridden_options_bucket").bucket.must_equal "overridden_options_bucket"
+      Form.new("some/test/key.ext", "http://www.someurl.com/comeback", :acl => "overridden_options_acl").acl.must_equal "overridden_options_acl"
     end
   end
 
@@ -109,7 +120,7 @@ describe S3FormPresenter::Form do
 
   describe "extra_form_attributes" do
     it "generates extra form attributes when provided in options" do
-      Form.new("some/key.ext", :extra_form_attributes => %Q( class="form-horizontal")).header.must_equal %Q(<form action="http://.s3.amazonaws.com/" method="post" enctype="multipart/form-data" class="form-horizontal">)
+      Form.new("some/key.ext", "http://www.someurl.com/comeback", :extra_form_attributes => %Q( class="form-horizontal")).header.must_equal %Q(<form action="http://.s3.amazonaws.com/" method="post" enctype="multipart/form-data" class="form-horizontal">)
     end
   end
 end

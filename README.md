@@ -4,8 +4,8 @@ Generates a simple form that is compatible with S3's form API. You can upload S3
 
 ## Usage
 
-```ruby
-<% S3FormPresenter::Form.new("some/key/path.ext") do %>
+```
+<% S3FormPresenter::Form.new("some/key/path.ext", "http://www.theredirecttowebsite.com/redirect/to/this/path") do %>
   <input name="file" type="file">
 	<input type="submit" value="Save File">
 <% end %>
