@@ -7,6 +7,7 @@ module S3FormPresenter
     HIDDEN_FIELD_NAMES = :key, :access_key, :secret_key, :acl, :redirect_url, :policy, :signature
     ACCESSOR_FIELDS = HIDDEN_FIELD_NAMES - [:policy, :signature]
     RENAMED_FIELDS = {:redirect_url => "success_action_redirect", :access_key => "AWSAccessKeyId"}
+    REQUIRED_ATTRIBUTES = [:bucket] + HIDDEN_FIELD_NAMES
     attr_accessor :bucket, :inner_content, :extra_form_attributes
 
     def initialize(key, redirect_url, options={}, &block)
@@ -44,6 +45,7 @@ module S3FormPresenter
     end
 
     def to_html
+      validate_required
       content = ""
       content += header
       content += hidden_fields.join
@@ -80,6 +82,12 @@ module S3FormPresenter
     def generate_hidden_field_accessors
       ACCESSOR_FIELDS.each do |field|
         self.class.send(:attr_accessor, field) unless self.class.respond_to?(field)
+      end
+    end
+
+    def validate_required
+      REQUIRED_ATTRIBUTES.each do |attr|
+        raise "#{attr} has not been specified." unless send(attr)
       end
     end
   end

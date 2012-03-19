@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    s3_form_presenter (0.0.2)
+    s3_form_presenter (0.0.4)
 
 GEM
   remote: http://rubygems.org/

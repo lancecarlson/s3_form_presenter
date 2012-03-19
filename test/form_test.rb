@@ -4,6 +4,10 @@ include S3FormPresenter
 
 describe S3FormPresenter::Form do
   before do
+    ENV["AWS_ACCESS_KEY_ID"] = nil
+    ENV["AWS_SECRET_ACCESS_KEY"] = nil
+    ENV["AWS_S3_BUCKET"] = nil
+
     @form = Form.new("some/test/key.ext", "http://www.someurl.com/comeback") do
       %Q(<input name="file" type="file"><input type="submit" value="Upload File" class="btn btn-primary">)
     end
@@ -128,6 +132,12 @@ describe S3FormPresenter::Form do
   end
 
   describe "to_html" do
+    it "raise an exception if required attributes are not specified" do
+      proc { Form.new("some/key", "somepath").to_html }.must_raise RuntimeError
+      proc { Form.new("some/key", "somepath", :bucket => 'test-bucket').to_html }.must_raise RuntimeError
+      proc { Form.new("some/key", "somepath", :bucket => 'test-bucket', :access_key => 'access-key').to_html }.must_raise RuntimeError
+    end
+
     it "generates the full html of the form" do
       content = @form.header + @form.hidden_fields.join + @form.inner_content + @form.footer
       #content = "" # comment out if you want to see real output
