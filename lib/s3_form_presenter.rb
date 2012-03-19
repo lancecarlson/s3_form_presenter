@@ -8,7 +8,7 @@ module S3FormPresenter
     ACCESSOR_FIELDS = HIDDEN_FIELD_NAMES - [:policy, :signature]
     RENAMED_FIELDS = {:redirect_url => "success_action_redirect", :access_key => "AWSAccessKeyId"}
     REQUIRED_ATTRIBUTES = [:bucket] + HIDDEN_FIELD_NAMES
-    attr_accessor :bucket, :inner_content, :extra_form_attributes
+    attr_accessor :bucket, :inner_content, :extra_form_attributes, :starts_with
 
     def initialize(key, redirect_url, options={}, &block)
       @key = key
@@ -67,11 +67,17 @@ module S3FormPresenter
         "expiration" => policy_expiration,
         "conditions" => [
                          {"bucket" => bucket},
-                         ["starts-with", "$key", "#{key}"],
+                         ["starts-with", "$key", "#{starts_with}"],
                          {"acl" => acl},
                          {"success_action_redirect" => redirect_url}
                         ]
       }
+    end
+
+    def starts_with
+      dirs = key.split("/")
+      dirs.pop
+      dirs.join("/")
     end
 
     private

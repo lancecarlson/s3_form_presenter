@@ -87,7 +87,7 @@ describe S3FormPresenter::Form do
         "secret_key" => "test_secret_key",
         "acl" => "private",
         "success_action_redirect" => "http://www.some-test-redirect.com/some/path",
-        "policy" => 332,
+        "policy" => 324,
         "signature" => 75
       }.each_with_index do |field, i|
         name = field.first
@@ -107,7 +107,7 @@ describe S3FormPresenter::Form do
       conditions = obj["conditions"]
       obj["expiration"].must_equal (Time.now + (10*60*60)).utc.strftime('%Y-%m-%dT%H:%M:%S.000Z')
       conditions[0]["bucket"].must_equal "test_bucket"
-      conditions[1].must_equal ["starts-with", "$key", "some/test/key.ext"]
+      conditions[1].must_equal ["starts-with", "$key", "some/test"]
       conditions[2]["acl"].must_equal :private
       conditions[3]["success_action_redirect"].must_equal "http://www.some-test-redirect.com/some/path"
     end
@@ -115,7 +115,7 @@ describe S3FormPresenter::Form do
 
   describe "policy" do
     it "generates the base64 encoded policy used in the form" do
-      @form.policy.length.must_equal 288
+      @form.policy.length.must_equal 280
     end
   end
 
@@ -128,6 +128,18 @@ describe S3FormPresenter::Form do
   describe "inner_content" do
     it "should grab content from a block if passed" do
       @form.inner_content.must_equal %Q(<input name="file" type="file"><input type="submit" value="Upload File" class="btn btn-primary">)
+    end
+  end
+
+  describe "starts_with" do
+    it "returns the key's path only when a dollar sign is passed" do
+      @form.key = "some/key/path/${filename}"
+      @form.starts_with.must_equal "some/key/path"
+    end
+
+    it "returns the key's path only when an explicit path is passed" do
+      @form.key = "some/key/path/filename"
+      @form.starts_with.must_equal "some/key/path"
     end
   end
 
