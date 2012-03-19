@@ -9,7 +9,7 @@ Generates a simple form that is compatible with S3's form API. You can upload S3
   <input name="file" type="file">
 	<input type="submit" value="Save File">
 <% end %>
-```ruby
+```
 
 ## Sinatra Integration (this will be put in a module one day)
 
@@ -34,4 +34,4 @@ helpers do
     @_out_buf = old_buffer
   end
 end
-```ruby
+```
