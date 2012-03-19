@@ -83,10 +83,10 @@ describe S3FormPresenter::Form do
       fields = @form.hidden_fields
       {
         "key" => "some/test/key.ext",
-        "access_key" => "test_access_key",
+        "AWSAccessKeyId" => "test_access_key",
         "secret_key" => "test_secret_key",
         "acl" => "private",
-        "redirect_url" => "http://www.some-test-redirect.com/some/path",
+        "success_action_redirect" => "http://www.some-test-redirect.com/some/path",
         "policy" => 332,
         "signature" => 75
       }.each_with_index do |field, i|

@@ -41,6 +41,7 @@ module S3FormPresenter
     end
     
     def hidden_field(name, value)
+      name = RENAMED_FIELDS[name] || name
       %Q(<input type="hidden" name="#{name}" value="#{value}">)
     end
 
