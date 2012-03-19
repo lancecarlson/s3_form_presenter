@@ -48,8 +48,8 @@ describe S3FormPresenter::Form do
   end
 
   describe "header" do
-    it "generates a multi-part post form with the correct path" do
-      @form.header.must_equal %Q(<form action="http://test_bucket.s3.amazonaws.com/" method="post" enctype="multipart/form-data">)
+    it "generates a multi-part post form with the correct path (https protocol)" do
+      @form.header.must_equal %Q(<form action="https://test_bucket.s3.amazonaws.com/" method="post" enctype="multipart/form-data">)
     end
   end
 
@@ -76,7 +76,24 @@ describe S3FormPresenter::Form do
 
   describe "hidden_fields" do
     it "generates HTML for each hidden_field" do
-      #@form.hidden_fields.must_equal []
+      fields = @form.hidden_fields
+      {
+        "key" => "some/test/key.ext",
+        "access_key" => "test_access_key",
+        "secret_key" => "test_secret_key",
+        "acl" => "private",
+        "redirect_url" => "http://www.some-test-redirect.com/some/path",
+        "policy" => 332,
+        "signature" => 75
+      }.each_with_index do |field, i|
+        name = field.first
+        value = field.last
+        if value.is_a? String
+          fields[i].must_equal %Q(<input type="hidden" name="#{name}" value="#{value}">)
+        elsif value.is_a? Integer
+          fields[i].length.must_equal value
+        end
+      end
     end
   end
 
@@ -120,7 +137,7 @@ describe S3FormPresenter::Form do
 
   describe "extra_form_attributes" do
     it "generates extra form attributes when provided in options" do
-      Form.new("some/key.ext", "http://www.someurl.com/comeback", :extra_form_attributes => %Q( class="form-horizontal")).header.must_equal %Q(<form action="http://.s3.amazonaws.com/" method="post" enctype="multipart/form-data" class="form-horizontal">)
+      Form.new("some/key.ext", "http://www.someurl.com/comeback", :bucket => "test-bucket", :extra_form_attributes => %Q( class="form-horizontal")).header.must_equal %Q(<form action="https://test-bucket.s3.amazonaws.com/" method="post" enctype="multipart/form-data" class="form-horizontal">)
     end
   end
 end

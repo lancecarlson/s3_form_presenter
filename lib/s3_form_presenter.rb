@@ -26,7 +26,7 @@ module S3FormPresenter
     end
 
     def header
-      %Q(<form action="http://#{bucket}.s3.amazonaws.com/" method="post" enctype="multipart/form-data"#{extra_form_attributes}>)
+      %Q(<form action="https://#{bucket}.s3.amazonaws.com/" method="post" enctype="multipart/form-data"#{extra_form_attributes}>)
     end
 
     def footer
