@@ -11,6 +11,7 @@ Generates a simple form that is compatible with S3's form API. You can upload S3
 
 ## Sinatra Integration (this will be put in a module one day)
 
+  ```ruby
 	helpers do
     def s3_form(*args, &block)
       buff = capture_erb(*args, &block)
@@ -31,3 +32,4 @@ Generates a simple form that is compatible with S3's form API. You can upload S3
       @_out_buf = old_buffer
     end
   end
+  ```ruby
