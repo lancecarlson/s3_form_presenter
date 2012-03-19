@@ -106,4 +106,10 @@ describe S3FormPresenter::Form do
       @form.to_html.must_equal content
     end
   end
+
+  describe "extra_form_attributes" do
+    it "generates extra form attributes when provided in options" do
+      Form.new("some/key.ext", :extra_form_attributes => %Q( class="form-horizontal")).header.must_equal %Q(<form action="http://.s3.amazonaws.com/" method="post" enctype="multipart/form-data" class="form-horizontal">)
+    end
+  end
 end

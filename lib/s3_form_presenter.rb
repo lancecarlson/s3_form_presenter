@@ -7,7 +7,7 @@ module S3FormPresenter
     HIDDEN_FIELD_NAMES = :key, :access_key, :secret_key, :acl, :redirect_url, :policy, :signature
     ACCESSOR_FIELDS = HIDDEN_FIELD_NAMES - [:policy, :signature]
     RENAMED_FIELDS = {:redirect_url => "success_action_redirect", :access_key => "AWSAccessKeyId"}
-    attr_accessor :bucket, :inner_content
+    attr_accessor :bucket, :inner_content, :extra_form_attributes
 
     def initialize(key, options={}, &block)
       @key = key
@@ -15,6 +15,7 @@ module S3FormPresenter
       @secret_key = options[:secret_key] || ENV["AWS_SECRET_ACCESS_KEY"]
       @bucket = options[:bucket] || ENV["AWS_S3_BUCKET"]
       @acl = options[:acl]
+      @extra_form_attributes = options[:extra_form_attributes]
       if block_given?
         @inner_content = block.call
       else
@@ -24,7 +25,7 @@ module S3FormPresenter
     end
 
     def header
-      %Q(<form action="http://#{bucket}.s3.amazonaws.com/" method="post" enctype="multipart/form-data">)
+      %Q(<form action="http://#{bucket}.s3.amazonaws.com/" method="post" enctype="multipart/form-data"#{extra_form_attributes}>)
     end
 
     def footer
