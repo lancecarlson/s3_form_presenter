@@ -21,5 +21,5 @@ end
 task :build => :gemspec do
   sh "mkdir -p pkg"
   sh "gem build s3_form_presenter.gemspec"
-  sh "mv s3_form_presenter-#{S3_Form_Presenter::VERSION}.gem pkg"
+  sh "mv s3_form_presenter-#{S3FormPresenter::VERSION}.gem pkg"
 end
